@@ -166,7 +166,7 @@
             addMsg(question, 'user');
             input.value = '';
 
-            const res = await fetch(`http://localhost:8080/api/demandes/chat?question=${encodeURIComponent(question)}&scoreId=${currentScoreId}`, { method: 'POST' });
+            const res = await fetch(`/api/demandes/chat?question=${encodeURIComponent(question)}&scoreId=${currentScoreId}`, { method: 'POST' });
             const answer = await res.text();
             addMsg(answer, 'ia');
         }
@@ -197,13 +197,16 @@
             };
 
             try {
-                const res = await fetch('http://localhost:8080/api/demandes/soumettre', {
+                const res = await fetch('/api/demandes/soumettre', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dto)
                 });
+                if (!res.ok) throw new Error("Erreur HTTP " + res.status);
                 const data = await res.json();
                 
+                if (!data.scoreCredit) throw new Error("Le score n'a pas pu être calculé par l'IA.");
+
                 currentScoreId = data.scoreCredit.id;
                 showResults(data, dto);
                 
@@ -211,7 +214,10 @@
                 if(!document.getElementById('chatWidget').classList.contains('active')) toggleChat();
                 addMsg(data.scoreCredit.recommandationIA, 'ia');
 
-            } catch (err) { alert("Erreur serveur : Vérifiez que Llama 3 et Spring Boot sont actifs."); }
+            } catch (err) { 
+                console.error(err);
+                alert("Erreur : " + err.message); 
+            }
             finally { btn.innerText = "Analyser mon dossier"; btn.disabled = false; }
         };
 
