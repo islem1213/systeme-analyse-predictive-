@@ -70,7 +70,9 @@ public class ScoreCalculationService {
 
         Double income = demand.getClient().getRevenuMensuel();
         Double charges = demand.getClient().getChargesFixes();
-        Double ratio = charges / income;
+        
+        // Guard against division by zero
+        Double ratio = (income != null && income > 0) ? charges / income : 1.0;
         
         String businessStatus;
         if (ratio < 0.3) {
