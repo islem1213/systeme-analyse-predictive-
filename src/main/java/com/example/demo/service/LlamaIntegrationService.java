@@ -18,7 +18,14 @@ public class LlamaIntegrationService {
     @Value("${ollama.model.name}")
     private String modelName;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public LlamaIntegrationService() {
+        org.springframework.http.client.SimpleClientHttpRequestFactory factory = new org.springframework.http.client.SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(10000);
+        factory.setReadTimeout(10000);
+        this.restTemplate = new RestTemplate(factory);
+    }
 
     /**
      * Génère une recommandation de crédit basée sur le profil du client

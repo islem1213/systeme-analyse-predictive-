@@ -21,6 +21,7 @@ public class ScoreCredit {
     
     private LocalDateTime dateCalcul;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToOne(mappedBy = "scoreCredit")
     private DemandePret demandePret;
 

@@ -12,6 +12,7 @@ public class Client extends Utilisateur {
     private String profession;
     private String situationFamiliale;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<DemandePret> demandes;
 

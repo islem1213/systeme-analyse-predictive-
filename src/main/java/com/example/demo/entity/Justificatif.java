@@ -17,6 +17,7 @@ public class Justificatif {
 
     private String urlStockage;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne
     @JoinColumn(name = "demande_pret_id", nullable = false)
     private DemandePret demandePret;

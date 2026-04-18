@@ -27,12 +27,12 @@ public class DemandeController {
     }
 
     @PostMapping("/chat")
-    public ResponseEntity<String> chat(@RequestParam String question, @RequestParam Long scoreId) {
+    public ResponseEntity<String> chat(@RequestParam String question, @RequestParam long scoreId) {
         return ResponseEntity.ok(scoreService.handleFollowUpQuestion(question, scoreId));
     }
 
     @GetMapping("/{id}/score")
-    public ResponseEntity<Double> getScore(@PathVariable Long id) {
+    public ResponseEntity<Double> getScore(@PathVariable long id) {
         return demandePretRepository.findById(id)
                 .map(d -> {
                     if (d.getScoreCredit() == null)
@@ -43,7 +43,7 @@ public class DemandeController {
     }
 
     @GetMapping("/{id}/recommandation")
-    public ResponseEntity<String> getRecommendation(@PathVariable Long id) {
+    public ResponseEntity<String> getRecommendation(@PathVariable long id) {
         return demandePretRepository.findById(id)
                 .map(d -> {
                     if (d.getScoreCredit() == null)
