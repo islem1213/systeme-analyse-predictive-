@@ -60,14 +60,28 @@ public class LlamaIntegrationService {
      * Méthode générique pour appeler l'API Ollama
      */
     private String callOllama(String prompt) {
+        // Strict null checks to satisfy static analysis
+        String safePrompt = (prompt != null) ? prompt : "";
+        String safeModel = (modelName != null) ? modelName : "llama3";
+        String safeUrl = (apiUrl != null) ? apiUrl : "";
+
         Map<String, Object> request = new HashMap<>();
-        request.put("model", modelName);
-        request.put("prompt", prompt);
+        request.put("model", safeModel);
+        request.put("prompt", safePrompt);
         request.put("stream", false);
 
         try {
-            Map<?, ?> response = restTemplate.postForObject(apiUrl, request, Map.class);
-            return (String) response.get("response");
+            if (safeUrl.isEmpty()) return "URL de l'API Ollama non configurée.";
+            
+            Map<?, ?> response = restTemplate.postForObject(safeUrl, request, Map.class);
+            
+            if (response != null) {
+                Object res = response.get("response");
+                if (res instanceof String result) {
+                    return result;
+                }
+            }
+            return "Désolé, l'analyse IA est momentanément indisponible (réponse invalide).";
         } catch (Exception e) {
             return "Désolé, l'analyse IA est momentanément indisponible.";
         }
