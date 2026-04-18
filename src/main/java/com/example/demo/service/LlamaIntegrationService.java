@@ -66,7 +66,7 @@ public class LlamaIntegrationService {
         request.put("stream", false);
 
         try {
-            Map<String, Object> response = restTemplate.postForObject(apiUrl, request, Map.class);
+            Map<?, ?> response = restTemplate.postForObject(apiUrl, request, Map.class);
             return (String) response.get("response");
         } catch (Exception e) {
             return "Désolé, l'analyse IA est momentanément indisponible.";
