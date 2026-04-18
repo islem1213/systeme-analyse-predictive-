@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankScore AI - Analyse Prédictive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
+
+        .navbar { background: var(--white); padding: 1rem 5%; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary); }
+
+        .main-container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 2rem; }
+
+        /* Form Card */
+        .card { background: var(--white); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: #64748b; }
+        input, select { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0; font-size: 0.95rem; }
+        button.btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 1rem; }
+        button.btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        /* Results Display */
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .full-width { grid-column: span 2; }
+        .stat-card { text-align: center; }
+        .gauge-container { position: relative; height: 200px; }
+        #scoreText { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 2rem; font-weight: 700; }
+
+        .status-badge { display: inline-block; padding: 0.5rem 1.5rem; border-radius: 2rem; font-weight: 700; margin-top: 1rem; }
+        .status-APPROUVE { background: var(--success); color: white; }
+        .status-EN_ATTENTE { background: var(--warning); color: white; }
+        .status-REFUSE { background: var(--danger); color: white; }
+
+        /* Chatbot */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 350px; background: var(--white); border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; transform: translateY(120%); transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; }
+        .chat-widget.active { transform: translateY(0); }
+        .chat-header { background: var(--primary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { height: 300px; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; background: #f1f5f9; }
+        .msg { max-width: 85%; padding: 0.75rem; border-radius: 0.75rem; font-size: 0.9rem; line-height: 1.4; }
+        .msg-ia { background: var(--white); align-self: flex-start; border-bottom-left-radius: 0; }
+        .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 0; }
+        .chat-footer { padding: 1rem; display: flex; gap: 0.5rem; border-top: 1px solid #e2e8f0; }
+        .chat-footer input { flex: 1; padding: 0.5rem; }
+        .chat-toggle { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); z-index: 1001; }
+
+        @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } .results-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">BankScore AI</div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="card">
+            <h3>Simulation</h3>
+            <form id="scoringForm">
+                <div class="form-group">
+                    <label>Nom complet</label>
+                    <input type="text" id="nom" value="Client Test" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" value="test@bank.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Revenu Mensuel (DT)</label>
+                    <input type="number" id="revenu" value="3500" required>
+                </div>
+                <div class="form-group">
+                    <label>Charges Fixes (DT)</label>
+                    <input type="number" id="charges" value="800" required>
+                </div>
+                <div class="form-group">
+                    <label>Montant Souhaité (DT)</label>
+                    <input type="number" id="montant" value="45000" required>
+                </div>
+                <div class="form-group">
+                    <label>Durée (Mois)</label>
+                    <input type="number" id="duree" value="60" required>
+                </div>
+                <div class="form-group">
+                    <label>Profession</label>
+                    <select id="profession">
+                        <option>Ingénieur</option>
+                        <option>Médecin</option>
+                        <option>Enseignant</option>
+                        <option>Autre</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Analyser mon dossier</button>
+            </form>
+        </aside>
+
+        <main>
+            <div id="resultsArea" style="display: none;">
+                <div class="results-grid">
+                    <div class="card stat-card">
+                        <h3>Score de Risque</h3>
+                        <div class="gauge-container">
+                            <canvas id="gaugeChart"></canvas>
+                            <div id="scoreText">0.0</div>
+                        </div>
+                        <div id="statutBadge" class="status-badge">---</div>
+                    </div>
+                    <div class="card">
+                        <h3>Répartition Financière</h3>
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                    <div class="card full-width">
+                        <h3>Analyse du Ratio d'Endettement</h3>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="placeholder" class="card" style="text-align: center; padding: 5rem;">
+                <h2 style="color: #94a3b8;">Remplissez le formulaire pour lancer l'analyse IA</h2>
+            </div>
+        </main>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chat-toggle" onclick="toggleChat()">💬</div>
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <span>Expert IA BankScore</span>
+            <span style="cursor:pointer" onclick="toggleChat()">✕</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg msg-ia">Bonjour ! Une fois votre dossier analysé, je pourrai vous expliquer les détails ici.</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Posez une question...">
+            <button onclick="sendQuestion()" style="border:none; background:var(--primary); color:white; border-radius:4px; cursor:pointer">OK</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScoreId = null;
+        let charts = {};
+
+        function toggleChat() { document.getElementById('chatWidget').classList.toggle('active'); }
+
+        async function sendQuestion() {
+            const input = document.getElementById('chatInput');
+            const question = input.value;
+            if(!question || !currentScoreId) return;
+
+            addMsg(question, 'user');
+            input.value = '';
+
+            const res = await fetch(`http://localhost:8080/api/demandes/chat?question=${encodeURIComponent(question)}&scoreId=${currentScoreId}`, { method: 'POST' });
+            const answer = await res.text();
+            addMsg(answer, 'ia');
+        }
+
+        function addMsg(text, type) {
+            const body = document.getElementById('chatBody');
+            const div = document.createElement('div');
+            div.className = `msg msg-${type}`;
+            div.innerText = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        document.getElementById('scoringForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "Analyse en cours...";
+            btn.disabled = true;
+
+            const dto = {
+                nom: document.getElementById('nom').value,
+                email: document.getElementById('email').value,
+                revenuMensuel: parseFloat(document.getElementById('revenu').value),
+                chargesFixes: parseFloat(document.getElementById('charges').value),
+                montantSouhaite: parseFloat(document.getElementById('montant').value),
+                dureeMois: parseInt(document.getElementById('duree').value),
+                profession: document.getElementById('profession').value
+            };
+
+            try {
+                const res = await fetch('http://localhost:8080/api/demandes/soumettre', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                });
+                const data = await res.json();
+                
+                currentScoreId = data.scoreCredit.id;
+                showResults(data, dto);
+                
+                // Chatbot init
+                if(!document.getElementById('chatWidget').classList.contains('active')) toggleChat();
+                addMsg(data.scoreCredit.recommandationIA, 'ia');
+
+            } catch (err) { alert("Erreur serveur : Vérifiez que Llama 3 et Spring Boot sont actifs."); }
+            finally { btn.innerText = "Analyser mon dossier"; btn.disabled = false; }
+        };
+
+        function showResults(data, dto) {
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('resultsArea').style.display = 'block';
+            
+            const score = data.scoreCredit.valeurScore;
+            document.getElementById('scoreText').innerText = score.toFixed(2);
+            
+            const badge = document.getElementById('statutBadge');
+            badge.innerText = data.scoreCredit.niveauRisque;
+            badge.className = `status-badge status-${data.scoreCredit.niveauRisque === 'BON' ? 'APPROUVE' : (data.scoreCredit.niveauRisque === 'MOYEN' ? 'EN_ATTENTE' : 'REFUSE')}`;
+
+            updateCharts(score, dto);
+        }
+
+        function updateCharts(score, dto) {
+            // Gauge Chart
+            renderChart('gaugeChart', 'doughnut', {
+                datasets: [{
+                    data: [score, 1 - score],
+                    backgroundColor: [score < 0.3 ? '#10b981' : (score < 0.6 ? '#f59e0b' : '#ef4444'), '#e2e8f0'],
+                    circumference: 180, rotation: 270, cutout: '80%'
+                }]
+            });
+
+            // Donut Chart: Revenu vs Charges
+            renderChart('donutChart', 'doughnut', {
+                labels: ['Revenu Net', 'Charges'],
+                datasets: [{
+                    data: [dto.revenuMensuel - dto.chargesFixes, dto.chargesFixes],
+                    backgroundColor: ['#2563eb', '#e2e8f0']
+                }]
+            });
+
+            // Bar Chart: Ratio vs Seuils
+            renderChart('barChart', 'bar', {
+                labels: ['Votre Ratio', 'Seuil Bon', 'Seuil Alerte'],
+                datasets: [{
+                    label: 'Ratio d\'endettement',
+                    data: [score, 0.3, 0.6],
+                    backgroundColor: ['#2563eb', '#10b981', '#ef4444']
+                }]
+            });
+        }
+
+        function renderChart(id, type, data) {
+            if(charts[id]) charts[id].destroy();
+            charts[id] = new Chart(document.getElementById(id), { type, data, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } });
+        }
+    </script>
+</body>
+</html>
