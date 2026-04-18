@@ -55,7 +55,7 @@ public class ScoreCalculationService {
         return processRequest(demand.getId());
     }
 
-    public String handleFollowUpQuestion(String question, Long scoreId) {
+    public String handleFollowUpQuestion(String question, long scoreId) {
         ScoreCredit score = scoreCreditRepository.findById(scoreId)
                 .orElseThrow(() -> new ResourceNotFoundException("Score non trouvé"));
         
@@ -64,7 +64,7 @@ public class ScoreCalculationService {
     }
 
     @Transactional
-    public DemandePret processRequest(Long requestId) {
+    public DemandePret processRequest(long requestId) {
         DemandePret demand = demandePretRepository.findById(requestId)
                 .orElseThrow(() -> new ResourceNotFoundException("Demande non trouvée"));
 
