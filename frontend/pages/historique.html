@@ -1,0 +1,97 @@
+<div class="historique-container">
+    <!-- TOOLBAR -->
+    <section class="toolbar-section">
+        <div class="toolbar">
+            <!-- Barre de recherche -->
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Rechercher par ID ou client..."
+                >
+            </div>
+
+            <!-- Filtres -->
+            <div class="filters">
+                <select id="statusFilter" class="filter-select">
+                    <option value="">Tous les statuts</option>
+                    <option value="APPROUVE"> Approuvées</option>
+                    <option value="EN_ATTENTE"> En Attente</option>
+                    <option value="REFUSE"> Rejetées</option>
+                </select>
+
+                <select id="sortSelect" class="filter-select">
+                    <option value="date_desc">Plus récent d'abord</option>
+                    <option value="date_asc">Plus ancien d'abord</option>
+                    <option value="montant_desc">Montant décroissant</option>
+                    <option value="montant_asc">Montant croissant</option>
+                    <option value="score_desc">Score décroissant</option>
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="toolbar-actions">
+                <button class="btn-export" onclick="Historique.exportData()"> Exporter</button>
+            </div>
+        </div>
+
+        <!-- Statistiques rapides -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value" id="totalCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Approuvées:</span>
+                <span class="stat-value approved" id="approvedCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">En Attente:</span>
+                <span class="stat-value pending" id="pendingCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Rejetées:</span>
+                <span class="stat-value rejected" id="rejectedCount">0</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- TABLEAU -->
+    <section class="table-section">
+        <div class="table-wrapper">
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort="id">ID <span class="sort-icon">↕️</span></th>
+                        <th class="sortable" data-sort="client">Client <span class="sort-icon">↕️</span></th>
+                        <th class="sortable" data-sort="montantDemande">Montant <span class="sort-icon">↕️</span></th>
+                        <th class="sortable" data-sort="statut">Statut <span class="sort-icon">↕️</span></th>
+                        <th class="sortable" data-sort="dateCreation">Date <span class="sort-icon">↕️</span></th>
+                        <th class="sortable" data-sort="scoreCredit">Score IA <span class="sort-icon">↕️</span></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                    <!-- Chargé dynamiquement -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Message vide -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <p>Aucune demande trouvée</p>
+        </div>
+    </section>
+
+    <!-- PAGINATION -->
+    <section class="pagination-section">
+        <div class="pagination" id="pagination">
+            <!-- Généré dynamiquement -->
+        </div>
+        <div class="records-info">
+            Affichage <span id="recordsStart">1</span>-<span id="recordsEnd">10</span> 
+            sur <span id="recordsTotal">0</span> demandes
+        </div>
+    </section>
+</div>

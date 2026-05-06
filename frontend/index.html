@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankScore AI - Intelligence de Crédit Premium</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <link rel="stylesheet" href="css/main.css?v=2">
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="flex-center">
+        <div class="loader-content text-center">
+            <div class="spinner mb-4"></div>
+            <p class="font-premium color-accent">Analyse BankScore AI en cours...</p>
+        </div>
+    </div>
+
+    <!-- Auth Section: Login -->
+    <section id="login-section">
+        <div class="auth-hero">
+            <div class="hero-content">
+                <h1 class="font-premium" style="font-size: 4rem; color: var(--accent); margin-bottom: 1.5rem;">BankScore AI</h1>
+                <p style="font-size: 1.25rem; color: var(--slate-100); max-width: 550px; line-height: 1.8;">
+                    L'excellence de l'analyse prédictive au service des institutions financières.
+                    Sécurisez vos engagements grâce à notre intelligence artificielle de pointe.
+                </p>
+                <div class="hero-stats mt-12 grid grid-cols-2 gap-8 opacity-50">
+                    <div><div class="text-3xl font-bold">99.8%</div><div class="text-xs uppercase tracking-widest">Précision</div></div>
+                    <div><div class="text-3xl font-bold">1.2M</div><div class="text-xs uppercase tracking-widest">Dossiers Analysés</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-form-side">
+            <div class="auth-card glass">
+                <h2 class="font-premium mb-2">Connexion</h2>
+                <p class="color-slate-400 mb-8">Veuillez entrer vos identifiants sécurisés.</p>
+                
+                <form id="login-form">
+                    <div class="role-selector">
+                        <label class="role-option">
+                            <input type="radio" name="login-role" value="Client" checked>
+                            <div class="role-card">
+                                <i class="fas fa-user"></i>
+                                <span>Client</span>
+                            </div>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="login-role" value="Banker">
+                            <div class="role-card">
+                                <i class="fas fa-university"></i>
+                                <span>Banquier</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="role-error">Veuillez sélectionner votre profil d'accès</div>
+
+                    <div class="input-group">
+                        <label>Email Professionnel</label>
+                        <input type="email" id="login-email" placeholder="admin@scoring.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4">Accéder au compte</button>
+                    <p class="text-center mt-8 color-slate-500">
+                        Nouveau sur la plateforme ? <a href="#" onclick="UI.showSection('signup-section')" class="color-accent font-bold no-underline">Créer un compte</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Section: Signup -->
+    <section id="signup-section" class="hidden">
+        <div class="auth-hero">
+            <div class="hero-content">
+                <h1 class="font-premium" style="font-size: 4rem; color: var(--accent); margin-bottom: 1.5rem;">Intelligence Partagée</h1>
+                <p style="font-size: 1.2rem; color: var(--slate-100); max-width: 500px;">
+                    Rejoignez l'écosystème BankScore et bénéficiez d'outils de simulation et d'analyse en temps réel.
+                </p>
+            </div>
+        </div>
+        <div class="auth-form-side">
+            <div class="auth-card glass">
+                <h2 class="font-premium mb-2">Inscription</h2>
+                <p class="color-slate-400 mb-8">Choisissez votre profil d'utilisation.</p>
+                
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label>Rôle Système</label>
+                        <select id="signup-role">
+                            <option value="ROLE_CLIENT">Client / Emprunteur</option>
+                            <option value="ROLE_BANQUIER">Banquier / Analyste</option>
+                            <option value="ROLE_ADMIN">Administrateur Système</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Nom complet</label>
+                        <input type="text" id="signup-nom" placeholder="Jean Dupont" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Professionnel</label>
+                        <input type="email" id="signup-email" placeholder="jean@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Profession / Poste</label>
+                        <input type="text" id="signup-profession" placeholder="Ex: Ingénieur, Manager..." required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label>Revenu (€)</label>
+                            <input type="number" id="signup-revenu" placeholder="3000">
+                        </div>
+                        <div class="input-group">
+                            <label>Charges (€)</label>
+                            <input type="number" id="signup-charges" placeholder="800">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="signup-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4">Créer mon accès</button>
+                    <p class="text-center mt-8 color-slate-500">
+                        Déjà membre ? <a href="#" onclick="UI.showSection('login-section')" class="color-accent font-bold no-underline">Se connecter</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Shell -->
+    <section id="dashboard-shell" class="hidden">
+        <div class="app-container">
+            <!-- SIDEBAR NAVIGATION -->
+            <nav class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h1 class="logo">
+                        <span class="logo-icon">₿</span>
+                        <span class="logo-text">BankScore</span>
+                    </h1>
+                </div>
+
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-page="dashboard">
+                        <a href="#" class="nav-link">
+                            <i class="icon-dashboard fas fa-chart-pie"></i>
+                            <span>Tableau de Bord</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="nouvelle-demande">
+                        <a href="#" class="nav-link">
+                            <i class="icon-plus fas fa-plus-circle"></i>
+                            <span>Nouvelle Demande</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="historique">
+                        <a href="#" class="nav-link">
+                            <i class="icon-history fas fa-history"></i>
+                            <span>Historique</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="sidebar-footer">
+                    <div class="user-profile">
+                        <div class="user-avatar flex-center" style="background: var(--primary); color: var(--bg-dark); font-weight: bold; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name" id="user-name">Utilisateur</p>
+                            <p class="user-role" id="user-role">Client</p>
+                        </div>
+                        <button id="logout-btn" class="btn-icon color-error" onclick="Auth.logout()" title="Déconnexion" style="color: var(--danger); background: none; border: none; cursor: pointer; padding: 5px;">
+                            <i class="fas fa-sign-out-alt text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- CONTENU PRINCIPAL -->
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="header-left">
+                        <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                        <h2 class="page-title" id="pageTitle">Tableau de Bord</h2>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn-report" onclick="document.getElementById('chatWidget').classList.add('active')">
+                            <i class="fas fa-robot mr-2"></i> Analyste IA
+                        </button>
+                    </div>
+                </header>
+
+                <!-- ZONE DE CONTENU DYNAMIQUE -->
+                <div class="content-area" id="contentArea">
+                    <!-- Dashboard is loaded here by default -->
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- HTML Templates (Bundled for local file access) -->
+    <script type="text/template" id="template-dashboard">
+        <div class="dashboard-container">
+            <section class="kpi-section">
+                <h2 class="section-title">Vue d'ensemble</h2>
+                <div class="kpi-grid">
+                    <div class="kpi-card"><div class="kpi-icon blue">📋</div><div class="kpi-content"><p class="kpi-label">Demandes Totales</p><p class="kpi-value" id="kpiTotalRequests">0</p></div></div>
+                    <div class="kpi-card"><div class="kpi-icon green">💰</div><div class="kpi-content"><p class="kpi-label">Montant Total</p><p class="kpi-value" id="kpiTotalAmount">0 €</p></div></div>
+                    <div class="kpi-card"><div class="kpi-icon gold">✅</div><div class="kpi-content"><p class="kpi-label">Taux d'Approbation</p><p class="kpi-value" id="kpiApprovalRate">0%</p></div></div>
+                    <div class="kpi-card"><div class="kpi-icon purple">⭐</div><div class="kpi-content"><p class="kpi-label">Score Moyen IA</p><p class="kpi-value" id="kpiAverageScore">0/100</p></div></div>
+                </div>
+            </section>
+            <section class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-container"><h3 class="chart-title">Évolution des Demandes</h3><canvas id="requestsChart" height="100"></canvas></div>
+                    <div class="chart-container compact"><h3 class="chart-title">Répartition par Statut</h3><canvas id="statusChart" height="100"></canvas></div>
+                </div>
+            </section>
+            <section class="recent-section">
+                <h2 class="section-title">Demandes Récentes</h2>
+                <div class="recent-requests-table">
+                    <table>
+                        <thead><tr><th>ID</th><th>Montant</th><th>Statut</th><th>Score IA</th></tr></thead>
+                        <tbody id="recentRequestsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </script>
+
+    <script type="text/template" id="template-nouvelle-demande">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h1 class="font-premium">Nouvelle Demande</h1>
+            <p class="color-slate-400 mb-8">Veuillez compléter les informations relatives à votre projet.</p>
+            <div id="wizard-content" class="glass-card p-10 animate-slide-up" style="border-radius: 12px; padding: 2.5rem;">
+                <!-- Dynamic content from UI.js -->
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="template-historique">
+        <div class="historique-container">
+            <section class="toolbar-section">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher par ID ou nom...">
+                    </div>
+                    <div class="filters">
+                        <select id="statusFilter" class="filter-select">
+                            <option value="">Tous les statuts</option>
+                            <option value="EN_ATTENTE">En Attente</option>
+                            <option value="APPROUVE">Approuvées</option>
+                            <option value="REFUSE">Rejetées</option>
+                        </select>
+                        <select id="sortSelect" class="filter-select">
+                            <option value="date_desc">Plus récentes</option>
+                            <option value="date_asc">Plus anciennes</option>
+                            <option value="montant_desc">Montant (Décroissant)</option>
+                            <option value="montant_asc">Montant (Croissant)</option>
+                            <option value="score_desc">Meilleur Score IA</option>
+                            <option value="client_asc">Client (A-Z)</option>
+                        </select>
+                        <button class="btn-export" onclick="Historique.exportData()">
+                            <i class="fas fa-download mr-2"></i> Exporter
+                        </button>
+                    </div>
+                </div>
+                <div class="stats-bar">
+                    <div><span class="stat-label">Total:</span> <span id="totalCount" class="stat-value">0</span></div>
+                    <div><span class="stat-label">Approuvées:</span> <span id="approvedCount" class="stat-value approved">0</span></div>
+                    <div><span class="stat-label">En Attente:</span> <span id="pendingCount" class="stat-value pending">0</span></div>
+                    <div><span class="stat-label">Rejetées:</span> <span id="rejectedCount" class="stat-value rejected">0</span></div>
+                </div>
+            </section>
+            
+            <section class="table-section">
+                <div class="table-wrapper">
+                    <table class="requests-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="id">ID <span class="sort-icon">↕️</span></th>
+                                <th class="sortable" data-sort="client">Client <span class="sort-icon">↕️</span></th>
+                                <th class="sortable" data-sort="montantDemande">Montant <span class="sort-icon">↕️</span></th>
+                                <th class="sortable" data-sort="statut">Statut <span class="sort-icon">↕️</span></th>
+                                <th class="sortable" data-sort="dateCreation">Date <span class="sort-icon">↕️</span></th>
+                                <th class="sortable" data-sort="scoreCredit">Score IA <span class="sort-icon">↕️</span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody"></tbody>
+                    </table>
+                </div>
+                
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-folder-open fa-3x mb-4"></i>
+                    <p>Aucune demande trouvée.</p>
+                </div>
+
+                <div class="pagination-section">
+                    <div class="records-info">
+                        Affichage de <span id="recordsStart">0</span> à <span id="recordsEnd">0</span> sur <span id="recordsTotal">0</span> dossiers
+                    </div>
+                    <div id="pagination" class="pagination"></div>
+                </div>
+            </section>
+        </div>
+    </script>
+
+    <!-- Chat Widget (Floating) -->
+    <div id="chatWidget" class="chat-widget glass">
+        <div class="chat-header">
+            <div class="flex items-center gap-3">
+                <div class="status-dot online"></div>
+                <span class="font-bold">Analyste IA</span>
+            </div>
+            <i class="fas fa-times cursor-pointer" onclick="document.getElementById('chatWidget').classList.remove('active')"></i>
+        </div>
+        <div id="chatBody" class="chat-body">
+            <div class="msg msg-ia">Bonjour. Je suis l'intelligence prédictive de BankScore. Comment puis-je assister votre analyse financière ?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Posez votre question...">
+            <button id="chatSend" class="btn-icon color-accent"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+
+    <!-- New Modular Scripts -->
+    <script src="js/utils/api-client.js"></script>
+    <script src="js/utils/formatters.js"></script>
+    <script src="js/modules/dashboard.js"></script>
+    <script src="js/modules/historique.js"></script>
+    <script src="js/modules/navigation.js"></script>
+    <script src="js/modules/chatbot.js"></script>
+    <script src="js/modules/info.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
